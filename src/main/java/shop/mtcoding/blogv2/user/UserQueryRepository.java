@@ -19,7 +19,9 @@ public class UserQueryRepository {
     // 쓰려는 건 아니고 이해하려고 하는 것.
     // JPA findById
     public User findById(Integer id) {
-        return em.find(User.class, id);
+        Query query = em.createQuery("select u from User u where u.id = :id", User.class);
+        query.setParameter("id", id);
+        return (User) query.getSingleResult();
     }
 
 }
