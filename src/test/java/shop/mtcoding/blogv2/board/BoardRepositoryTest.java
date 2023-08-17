@@ -1,8 +1,8 @@
 package shop.mtcoding.blogv2.board;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -38,6 +38,21 @@ public class BoardRepositoryTest {
     }
 
     @Test
+    public void mFindById_test() {
+        boardRepository.mFindById(1);
+    }
+
+    @Test
+    public void findById_tset() {
+        Optional<Board> boardOP = boardRepository.findById(5);
+        if (boardOP.isPresent()) { // Board가 존재하면!! (null 안전성 제공)
+            System.out.println("테스트 : board가 있습니다.");
+            Board board = boardOP.get();
+            board.getUser().getEmail(); // LazyLoadging
+        }
+    }
+
+    @Test
     public void findAll_test() {
         System.out.println("조회 직전");
         List<Board> boardList = boardRepository.findAll();
@@ -50,6 +65,11 @@ public class BoardRepositoryTest {
         // 연관된 객체에 null을 참조하려고 하면 조회가 일어남 (조회 O)
         System.out.println(boardList.get(0).getUser().getUsername()); // null -> ssar
         System.out.println(boardList.get(3).getUser().getUsername());
+    }
+
+    @Test
+    public void deleteById_test() {
+        boardRepository.deleteById(6);
     }
 
     @Test
