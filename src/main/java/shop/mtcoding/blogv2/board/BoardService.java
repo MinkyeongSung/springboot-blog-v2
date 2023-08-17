@@ -46,7 +46,12 @@ public class BoardService {
 
     public Board 상세보기(Integer id) {
         // board만 가져오면 된다
-        return boardRepository.findById(id).get();
+        Optional<Board> boardOP = boardRepository.findById(id);
+        if (boardOP.isPresent()) {
+            return boardOP.get();
+        } else {
+            throw new RuntimeException(id + "는 찾을 수 없습니다");
+        }
     }
 
     @Transactional
@@ -56,16 +61,22 @@ public class BoardService {
             Board board = boardOP.get();
             board.setTitle(updateDTO.getTitle());
             board.setContent(updateDTO.getContent());
+        } else {
+            throw new RuntimeException(id + "는 찾을 수 없습니다");
         }
         // Board board = boardRepository.findById(id).get();
         // board.setTitle(updateDTO.getTitle());
         // board.setContent(updateDTO.getContent());
 
         // boardRepository.save(board);
-    }
+    } // flush (더티체킹)
 
     @Transactional
     public void 삭제하기(Integer id) {
-        boardRepository.deleteById(id);
+        try {
+            boardRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("6번은 없어요");
+        }
     }
 }

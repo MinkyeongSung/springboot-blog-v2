@@ -1,7 +1,5 @@
 package shop.mtcoding.blogv2.board;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import shop.mtcoding.blogv2._core.util.Script;
+
 @Controller
 public class BoardController {
 
@@ -21,9 +21,12 @@ public class BoardController {
     private BoardService boardService;
 
     @PostMapping("/board/{id}/delete")
-    public String delete(@PathVariable Integer id) {
+    public @ResponseBody String delete(@PathVariable Integer id) {
+        // 인증체크
+        // 권한체크는 (DB에서 하는거라 Serivce)
+
         boardService.삭제하기(id);
-        return "redirect:/";
+        return Script.href("/");
     }
 
     // localhost:8080?page=1&keyword=바나나
@@ -53,7 +56,7 @@ public class BoardController {
     @GetMapping("/board/{id}/updateForm")
     public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
         Board board = boardService.상세보기(id);
-        request.setAttribute("board", board);
+        request.setAttribute("board", board); // request에 담는 것과 동일
         return "board/updateForm";
     }
 
