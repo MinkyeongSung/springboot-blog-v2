@@ -1,6 +1,7 @@
 package shop.mtcoding.blogv2.board;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,9 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blogv2._core.util.Script;
+import shop.mtcoding.blogv2.user.User;
 
 @Controller
 public class BoardController {
+
+    @Autowired
+    private HttpSession session;
 
     @Autowired
     private BoardService boardService;
@@ -87,7 +92,8 @@ public class BoardController {
     // 5. view or data 응답} (V)
     @PostMapping("/board/save")
     public String save(BoardRequest.SaveDTO saveDTO) {
-        boardService.글쓰기(saveDTO, 1);
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        boardService.글쓰기(saveDTO, sessionUser.getId());
         return "redirect:/";
     }
 }
