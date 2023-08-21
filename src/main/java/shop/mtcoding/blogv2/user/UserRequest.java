@@ -3,6 +3,7 @@ package shop.mtcoding.blogv2.user;
 import lombok.Getter;
 import lombok.Setter;
 
+// 수요일 세환이 DTO 발표
 public class UserRequest {
 
     @Getter
@@ -10,7 +11,7 @@ public class UserRequest {
     public static class JoinDTO {
         private String username;
         private String password;
-        private String emaill;
+        private String email;
     }
 
     @Getter
@@ -25,5 +26,4 @@ public class UserRequest {
     public static class UpdateDTO {
         private String password;
     }
-
 }

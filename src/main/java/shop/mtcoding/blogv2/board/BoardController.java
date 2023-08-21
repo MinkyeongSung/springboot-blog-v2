@@ -20,13 +20,42 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
+    @Autowired
+    private BoardRepository boardRepository;
+
+    @PostMapping("/board/{id}/update")
+    public String update(@PathVariable Integer id, BoardRequest.UpdateDTO updateDTO) {
+        // where 데이터, body, session값
+        boardService.게시글수정하기(id, updateDTO);
+        return "redirect:/board/" + id;
+    }
+
+    @GetMapping("/board/{id}/updateForm")
+    public String updateForm(@PathVariable Integer id, Model model) {
+        Board board = boardService.상세보기(id);
+        model.addAttribute("board", board); // request에 담는 것과 동일
+        return "board/updateForm";
+    }
+
     @PostMapping("/board/{id}/delete")
     public @ResponseBody String delete(@PathVariable Integer id) {
-        // 인증체크
-        // 권한체크는 (DB에서 하는거라 Serivce)
-
         boardService.삭제하기(id);
         return Script.href("/");
+    }
+
+    @GetMapping("/board/{id}")
+    public String detail(@PathVariable Integer id, Model model) {
+        Board board = boardService.상세보기(id);
+        model.addAttribute("board", board);
+        return "board/detail";
+    }
+
+    @GetMapping("/test/board/{id}")
+    public @ResponseBody Board testdetail(@PathVariable Integer id, Model model) {
+        Board board = boardRepository.mFindByIdJoinRepliesInUser(id).get();
+        // model.addAttribute("board", board);
+        return board;
+        // return "board/detail";
     }
 
     // localhost:8080?page=1&keyword=바나나
@@ -46,26 +75,6 @@ public class BoardController {
         return boardPG; // ViewResolver (X), MessageConverter (O) -> json 직렬화
     }
 
-    @GetMapping("/board/{id}")
-    public String detail(@PathVariable Integer id, Model model) {
-        Board board = boardService.상세보기(id);
-        model.addAttribute("board", board);
-        return "board/detail";
-    }
-
-    @GetMapping("/board/{id}/updateForm")
-    public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
-        Board board = boardService.상세보기(id);
-        request.setAttribute("board", board); // request에 담는 것과 동일
-        return "board/updateForm";
-    }
-
-    @PostMapping("/board/{id}/update")
-    public String update(@PathVariable Integer id, BoardRequest.UpdateDTO updateDTO) {
-        boardService.업데이트(updateDTO, id);
-        return "redirect:/board/" + id;
-    }
-
     @GetMapping("/board/saveForm")
     public String saveForm() {
         return "board/saveForm";
@@ -81,5 +90,4 @@ public class BoardController {
         boardService.글쓰기(saveDTO, 1);
         return "redirect:/";
     }
-
 }

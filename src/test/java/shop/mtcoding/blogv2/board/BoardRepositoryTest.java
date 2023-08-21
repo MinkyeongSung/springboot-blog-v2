@@ -33,6 +33,34 @@ public class BoardRepositoryTest {
     }
 
     @Test
+    public void mFindByIdJoinUserAndReplies_test() {
+        Board board = boardRepository.mFindByIdJoinRepliesInUser(1).get();
+        System.out.println("board : id : "+board.getId());
+        System.out.println("board : title : "+board.getTitle());
+        System.out.println("board : content : "+board.getContent());
+        System.out.println("board : createdAt : "+board.getCreatedAt());
+        System.out.println("===================");
+        board.getReplies().stream().forEach(r -> {
+            System.out.println("board in replies : id : "+r.getId());
+            System.out.println("board in replies : comment : "+r.getComment());
+            System.out.println("board in replies in user : id : "+r.getUser().getId());
+            System.out.println("board in replies in user : username : "+r.getUser().getUsername());
+        });
+
+    }
+
+    @Test
+    public void deleteById_test() {
+        boardRepository.deleteById(6);
+        try {
+            boardRepository.deleteById(6);
+        } catch (Exception e) {
+            System.out.println("괜찮아");
+        }
+
+    } // rollback
+
+    @Test
     public void mFindAll_test() {
         boardRepository.mFindAll();
     }
@@ -65,11 +93,6 @@ public class BoardRepositoryTest {
         // 연관된 객체에 null을 참조하려고 하면 조회가 일어남 (조회 O)
         System.out.println(boardList.get(0).getUser().getUsername()); // null -> ssar
         System.out.println(boardList.get(3).getUser().getUsername());
-    }
-
-    @Test
-    public void deleteById_test() {
-        boardRepository.deleteById(6);
     }
 
     @Test

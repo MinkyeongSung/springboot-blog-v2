@@ -10,10 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
-import shop.mtcoding.blogv2.board.BoardRequest.SaveDTO;
 import shop.mtcoding.blogv2.board.BoardRequest.UpdateDTO;
+import shop.mtcoding.blogv2.reply.Reply;
+import shop.mtcoding.blogv2.reply.ReplyRepository;
+import shop.mtcoding.blogv2.reply.ReplyService;
 import shop.mtcoding.blogv2.user.User;
 
 /*
@@ -27,6 +28,9 @@ public class BoardService {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private ReplyRepository replyRepository;
 
     @Transactional
     public void 글쓰기(BoardRequest.SaveDTO saveDTO, int sessionUserId) {
@@ -45,8 +49,8 @@ public class BoardService {
     }
 
     public Board 상세보기(Integer id) {
-        // board만 가져오면 된다
-        Optional<Board> boardOP = boardRepository.findById(id);
+        // board 만 가져오면 된다!!
+        Optional<Board> boardOP = boardRepository.mFindByIdJoinRepliesInUser(id);
         if (boardOP.isPresent()) {
             return boardOP.get();
         } else {
@@ -55,7 +59,28 @@ public class BoardService {
     }
 
     @Transactional
-    public void 업데이트(UpdateDTO updateDTO, Integer id) {
+    public void 삭제하기(Integer id) {
+        try {
+            Optional<Board> optionalBoard = boardRepository.findById(id);
+            if (optionalBoard.isPresent()) {
+                Board board = optionalBoard.get();
+                
+                List<Reply> replies = board.getReplies(); // 게시글에 연관된 댓글들 가져옴
+                
+                // 댓글들 삭제
+                replyRepository.deleteAll(replies);
+                
+                // 게시글 삭제
+                boardRepository.deleteById(id);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(id + "를 찾을 수 없어요");
+        }
+    }
+
+    @Transactional
+    public void 게시글수정하기(Integer id, UpdateDTO updateDTO) {
         Optional<Board> boardOP = boardRepository.findById(id);
         if (boardOP.isPresent()) {
             Board board = boardOP.get();
@@ -64,19 +89,5 @@ public class BoardService {
         } else {
             throw new RuntimeException(id + "는 찾을 수 없습니다");
         }
-        // Board board = boardRepository.findById(id).get();
-        // board.setTitle(updateDTO.getTitle());
-        // board.setContent(updateDTO.getContent());
-
-        // boardRepository.save(board);
     } // flush (더티체킹)
-
-    @Transactional
-    public void 삭제하기(Integer id) {
-        try {
-            boardRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("6번은 없어요");
-        }
-    }
 }

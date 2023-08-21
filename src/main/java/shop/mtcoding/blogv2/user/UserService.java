@@ -1,9 +1,8 @@
 package shop.mtcoding.blogv2.user;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import shop.mtcoding.blogv2.user.UserRequest.JoinDTO;
 import shop.mtcoding.blogv2.user.UserRequest.LoginDTO;
@@ -21,27 +20,26 @@ public class UserService {
         User user = User.builder()
                 .username(joinDTO.getUsername())
                 .password(joinDTO.getPassword())
-                .email(joinDTO.getEmaill())
+                .email(joinDTO.getEmail())
                 .build();
-        userRepository.save(null);
+        userRepository.save(user); // em.persist
     }
 
     public User 로그인(LoginDTO loginDTO) {
         User user = userRepository.findByUsername(loginDTO.getUsername());
 
-        // 1. username을 찾을 수 없음.
+        // 1. 유저네임 검증
         if (user == null) {
             return null;
         }
 
         // 2. 패스워드 검증
-        if (user.getPassword().equals(loginDTO.getPassword())) {
+        if (!user.getPassword().equals(loginDTO.getPassword())) {
             return null;
         }
 
         // 3. 로그인 성공
         return user;
-
     }
 
     public User 회원정보보기(Integer id) {
@@ -57,5 +55,6 @@ public class UserService {
         user.setPassword(updateDTO.getPassword());
 
         return user;
-    }// 3. flush(transactional)
+    } // 3. flush
+
 }
