@@ -60,12 +60,16 @@ public class BoardService {
 
     @Transactional
     public void 삭제하기(Integer id) {
+        // 게시글에 연관된 댓글들 가져옴
         List<Reply> replies = replyRepository.findByBoardId(id);
-        for (Reply reply : replies) {
-            reply.setBoard(null);
-            replyRepository.save(reply);
-        }
+
+        // for (Reply reply : replies) {
+        //     reply.setBoard(null);
+        //     replyRepository.save(reply);
+        // }
         try {
+            // 댓글들 삭제
+            replyRepository.deleteAll(replies);
             boardRepository.deleteById(id);
         } catch (Exception e) {
             throw new MyException(id+"를 찾을 수 없어요");
