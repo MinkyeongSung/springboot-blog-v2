@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import shop.mtcoding.blogv2._core.error.ex.MyException;
+import shop.mtcoding.blogv2._core.error.ex.MyApiException;
+import shop.mtcoding.blogv2._core.util.ApiUtil;
 import shop.mtcoding.blogv2._core.util.Script;
 
 @Controller
@@ -20,6 +22,9 @@ public class UserController {
 
     @Autowired
     private HttpSession session;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // 브라우저 GET /logout 요청을 함 (request 1)
     // 서버는 / 주소를 응답의 헤더에 담음 (Location), 상태코드 302
@@ -64,6 +69,22 @@ public class UserController {
         return "user/updateForm";
     }
 
+    @GetMapping("/api/check")
+    public @ResponseBody ApiUtil<String> check(String username) {
+        if (username == "") {
+            throw new MyApiException("사용할 수 없는 이름입니다");
+        }
+
+        userService.중복체크(username); // ?????????
+        System.out.println("체크 : " + username);
+        if (username == false){
+            throw new MyApiException("중복된 이름입니다");
+        }
+
+
+        return new ApiUtil<String>(true, "사용할 수 있는 이름입니다");
+    }
+
     @PostMapping("/user/update")
     public String update(UserRequest.UpdateDTO updateDTO) {
         // 1. 회원수정 (서비스)
@@ -73,4 +94,13 @@ public class UserController {
         session.setAttribute("sessionUser", user);
         return "redirect:/";
     }
+
+    // @GetMapping("/check")
+    // public ResponseEntity<String> check(String username) {
+    // User user = userRepository.findByUsername(username);
+    // if (user != null) {
+    // throw new MyException("유저네임이 중복되었습니다.");
+    // }
+    // throw new MyException("유저네임을 사용할 수 있습니다");
+    // }
 }

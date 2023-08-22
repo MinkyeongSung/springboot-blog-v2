@@ -58,4 +58,8 @@ public class UserService {
         return user;
     } // 3. flush
 
+    public void 중복체크(String username) {
+        
+    }
+
 }
