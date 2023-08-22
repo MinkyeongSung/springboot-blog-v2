@@ -2,6 +2,8 @@ package shop.mtcoding.blogv2.reply;
 
 import java.sql.Timestamp;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,12 +39,11 @@ public class Reply {
     @Column(nullable = false, length = 100)
     private String comment;
 
-
     @JsonIgnoreProperties({"password", "email", "createdAt"})
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 
     @CreationTimestamp

@@ -11,10 +11,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import shop.mtcoding.blogv2._core.error.ex.MyException;
 import shop.mtcoding.blogv2.board.BoardRequest.UpdateDTO;
 import shop.mtcoding.blogv2.reply.Reply;
 import shop.mtcoding.blogv2.reply.ReplyRepository;
-import shop.mtcoding.blogv2.reply.ReplyService;
 import shop.mtcoding.blogv2.user.User;
 
 /*
@@ -54,28 +54,21 @@ public class BoardService {
         if (boardOP.isPresent()) {
             return boardOP.get();
         } else {
-            throw new RuntimeException(id + "는 찾을 수 없습니다");
+            throw new MyException(id + "는 찾을 수 없습니다");
         }
     }
 
     @Transactional
     public void 삭제하기(Integer id) {
+        List<Reply> replies = replyRepository.findByBoardId(id);
+        for (Reply reply : replies) {
+            reply.setBoard(null);
+            replyRepository.save(reply);
+        }
         try {
-            Optional<Board> optionalBoard = boardRepository.findById(id);
-            if (optionalBoard.isPresent()) {
-                Board board = optionalBoard.get();
-                
-                List<Reply> replies = board.getReplies(); // 게시글에 연관된 댓글들 가져옴
-                
-                // 댓글들 삭제
-                replyRepository.deleteAll(replies);
-                
-                // 게시글 삭제
-                boardRepository.deleteById(id);
-            }
-
+            boardRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException(id + "를 찾을 수 없어요");
+            throw new MyException(id+"를 찾을 수 없어요");
         }
     }
 
@@ -87,7 +80,7 @@ public class BoardService {
             board.setTitle(updateDTO.getTitle());
             board.setContent(updateDTO.getContent());
         } else {
-            throw new RuntimeException(id + "는 찾을 수 없습니다");
+            throw new MyException(id + "는 찾을 수 없습니다");
         }
     } // flush (더티체킹)
 }

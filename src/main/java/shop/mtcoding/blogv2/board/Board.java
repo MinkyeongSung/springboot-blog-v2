@@ -45,10 +45,11 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user; // 1+N
 
-    //ManyToOne Eager 전략 (디폴트)
-    //OntToMany Lazy 전략 (디폴트)
-    @JsonIgnoreProperties({"board"}) //Json 안에 있는 필드를 직렬화 하지 말라는거. (여기선 보드)
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)    //나는 포린키가 아니에요 설정
+    // ManyToOne Eager 전략 (디폴트)
+    // OneToMany Lazy 전략 (디폴트)
+    @JsonIgnoreProperties({"board"})
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Reply> replies = new ArrayList<>();
 
     @CreationTimestamp

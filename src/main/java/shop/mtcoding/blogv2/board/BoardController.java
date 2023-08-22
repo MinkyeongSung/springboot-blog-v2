@@ -1,7 +1,6 @@
 package shop.mtcoding.blogv2.board;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,13 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blogv2._core.util.Script;
-import shop.mtcoding.blogv2.user.User;
 
 @Controller
 public class BoardController {
-
-    @Autowired
-    private HttpSession session;
 
     @Autowired
     private BoardService boardService;
@@ -56,11 +51,9 @@ public class BoardController {
     }
 
     @GetMapping("/test/board/{id}")
-    public @ResponseBody Board testdetail(@PathVariable Integer id, Model model) {
+    public @ResponseBody Board testDetail(@PathVariable Integer id) {
         Board board = boardRepository.mFindByIdJoinRepliesInUser(id).get();
-        // model.addAttribute("board", board);
-        return board;
-        // return "board/detail";
+        return board; 
     }
 
     // localhost:8080?page=1&keyword=바나나
@@ -92,8 +85,7 @@ public class BoardController {
     // 5. view or data 응답} (V)
     @PostMapping("/board/save")
     public String save(BoardRequest.SaveDTO saveDTO) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        boardService.글쓰기(saveDTO, sessionUser.getId());
+        boardService.글쓰기(saveDTO, 1);
         return "redirect:/";
     }
 }
