@@ -38,12 +38,19 @@ public class User {
     @CreationTimestamp
     private Timestamp createdAt;
 
+
+    private String picUrl; //경로만 저장
+
+
     @Builder
-    public User(Integer id, String username, String password, String email, Timestamp createdAt) {
+    public User(Integer id, String username, String password, String email, Timestamp createdAt, String picUrl) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.createdAt = createdAt;
+        this.picUrl = picUrl;
     }
+
+    
 }

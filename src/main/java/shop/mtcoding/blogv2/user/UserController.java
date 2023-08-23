@@ -44,8 +44,14 @@ public class UserController {
 
     // M - V - C
     @PostMapping("/join")
-    public String join(UserRequest.JoinDTO joinDTO) {
+    public @ResponseBody String join(UserRequest.JoinDTO joinDTO) {
+        // System.out.println(joinDTO.getPic().getOriginalFilename());
+        // System.out.println(joinDTO.getPic().getSize());
+        // System.out.println(joinDTO.getPic().getContentType());
+
+        // 핵심로직(바이트화)
         userService.회원가입(joinDTO);
+        
         return "user/loginForm"; // persist 초기화
     }
 
@@ -77,10 +83,9 @@ public class UserController {
 
         userService.중복체크(username); // ?????????
         System.out.println("체크 : " + username);
-        if (username == false){
-            throw new MyApiException("중복된 이름입니다");
-        }
-
+        // if (username == false){
+        // throw new MyApiException("중복된 이름입니다");
+        // }
 
         return new ApiUtil<String>(true, "사용할 수 있는 이름입니다");
     }
