@@ -1,7 +1,5 @@
 package shop.mtcoding.blogv2.user;
 
-import java.util.Optional;
-
 import javax.persistence.EntityManager;
 
 import org.junit.jupiter.api.Test;

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blogv2._core.error.ex.MyApiException;
@@ -23,8 +23,7 @@ public class UserController {
     @Autowired
     private HttpSession session;
 
-    @Autowired
-    private UserRepository userRepository;
+    
 
     // 브라우저 GET /logout 요청을 함 (request 1)
     // 서버는 / 주소를 응답의 헤더에 담음 (Location), 상태코드 302

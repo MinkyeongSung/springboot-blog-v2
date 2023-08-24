@@ -2,7 +2,7 @@ package shop.mtcoding.blogv2.user;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
+
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,8 @@ public class UserJPQLRepositoryTest {
     @Autowired
     private UserJPQLRepository userJPQLRepository;
 
-    @Autowired
-    private EntityManager em;
+    
+    
 
     @Test
     public void findByUsername_test() {
